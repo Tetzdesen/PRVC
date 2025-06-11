@@ -14,9 +14,9 @@ const int PESO_CAP = 100;
 
 int main()
 {
-    srand(time(0));
+   // srand(time(0));
     Solucao sol, clone;
-    ler_dados("instancia.txt");
+    ler_dados("instancias/instancia-toy.txt");
     testar_dados(" ");
 
     /*
@@ -38,7 +38,7 @@ int main()
     sol.vet_sol[7] = 0;
 */
 
-    criar_he_gu(sol);
+    heu_cons_ale_gul(sol, 10);
     calcular_fo(sol);
 
     printf("\n\n\n");
@@ -142,7 +142,7 @@ void criar_he_gu(Solucao& s){
     memset(s.vet_pes_vei, 0, sizeof(s.vet_pes_vei));
 
     bool visitado[MAX_CLI] = {false};
-    visitado[0] = true; // dep�sito
+    visitado[0] = true;
     int cli_maior = cliente_maior_demanda();
     for (int j = 0; j < num_vei; j++) {
         if (visitado[cli_maior]) continue;
@@ -157,6 +157,61 @@ void criar_he_gu(Solucao& s){
     }
 
     for (int i = 1; i <= num_cli; i++) {
+        if (visitado[i]) continue;
+        for (int j = 0; j < num_vei; j++) {
+            if (s.vet_pes_vei[j] + vet_dem_cli[i] <= vet_cap_vei[j]) {
+                int pos = s.vet_qtd_cli_vei[j];
+                s.mat_sol[j][pos] = i;
+                s.vet_qtd_cli_vei[j]++;
+                s.vet_pes_vei[j] += vet_dem_cli[i];
+                visitado[i] = true;
+                break;
+            }
+        }
+    }
+}
+
+void heu_cons_ale_gul(Solucao& s, const double& percentual){
+    int qtd = MAX(1, (percentual / 100.00) * num_cli);
+    printf(" %d ", qtd);
+    int vetor[num_cli];
+    int vei, cli;
+    int cli_maior = cliente_maior_demanda();
+    bool visitado[MAX_CLI] = {false};
+    visitado[0] = true;
+
+    memset(&s.vet_qtd_cli_vei, 0, sizeof(s.vet_qtd_cli_vei));
+    memset(s.vet_pes_vei, 0, sizeof(s.vet_pes_vei));
+
+    for(int i = 0; i < qtd; i++){
+        vetor[i] = i + 1;
+    }
+
+   // Embaralha os elementos
+    for (int i = qtd - 1; i > 0; i--) {
+        int j = rand() % (i + 1);
+        std::swap(vetor[i], vetor[j]);
+    }
+
+    for(int i = 0; i < qtd; i++){
+        vei = rand() % num_vei;
+        s.mat_sol[vei][s.vet_qtd_cli_vei[vei]] = vetor[i];
+        s.vet_qtd_cli_vei[vei]++;
+    }
+
+    for (int j = 0; j < num_vei; j++) {
+        if (visitado[cli_maior]) continue;
+        if (vet_dem_cli[cli_maior] <= vet_cap_vei[j]) {
+            int pos = s.vet_qtd_cli_vei[j];
+            s.mat_sol[j][pos] = cli_maior;
+            s.vet_qtd_cli_vei[j]++;
+            s.vet_pes_vei[j] += vet_dem_cli[cli_maior];
+            visitado[cli_maior] = true;
+            break;
+        }
+    }
+
+    for (int i = qtd; i < num_cli; i++) {
         if (visitado[i]) continue;
         for (int j = 0; j < num_vei; j++) {
             if (s.vet_pes_vei[j] + vet_dem_cli[i] <= vet_cap_vei[j]) {

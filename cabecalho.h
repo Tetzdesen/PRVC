@@ -21,6 +21,7 @@ double mat_custo[MAX_CLI][MAX_CLI];
 void criar_solucao(Solucao& s);
 void criar_he_ale(Solucao& s);
 void criar_he_gu(Solucao& s);
+void heu_cons_ale_gul(Solucao& s, const double& percentual);
 
 void remover_cliente(Solucao& s, const int& vei, const int&pos);
 void inserir_cliente(Solucao& s, const int& vei, const int&cli);
