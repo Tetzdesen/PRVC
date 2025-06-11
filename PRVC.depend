@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1749659951 source:c:\users\tetzner\desktop\prvc\main.cpp
+	<stdlib.h>
+	<stdio.h>
+	<time.h>
+	<vector>
+	<memory.h>
+	<string.h>
+	<math.h>
+	"cabecalho.h"
+
+1749654844 c:\users\tetzner\desktop\prvc\cabecalho.h
+
